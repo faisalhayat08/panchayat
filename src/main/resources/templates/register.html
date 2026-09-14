@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Register')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<div class="form-box">
+    <h2>Resident Registration</h2>
+    <p th:if="${error}" class="form-error" th:text="${error}">Error message</p>
+
+    <form th:action="@{/register}" th:object="${user}" method="post">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" th:field="*{fullName}" required="required"/>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" th:field="*{email}" required="required"/>
+
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" th:field="*{phone}"/>
+
+        <label for="flatNumber">Flat / House Number</label>
+        <input type="text" id="flatNumber" th:field="*{flatNumber}" placeholder="e.g. A-204" required="required"/>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" th:field="*{password}" required="required"/>
+
+        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:22px;">Create Account</button>
+    </form>
+    <div style="border-top: 1px solid var(--border); margin-top: 24px; padding-top: 16px; text-align: center; font-size: 13.5px;">
+        <p style="margin: 6px 0;">Already have an account? <a th:href="@{/login}">Login here</a></p>
+        <p style="margin: 6px 0;">Are you a committee/management member? <a th:href="@{/register-admin}" style="color: var(--accent-dark); font-weight:600;">🏛️ Register as Management Staff</a></p>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

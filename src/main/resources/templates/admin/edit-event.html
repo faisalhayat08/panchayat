@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin - Edit Event')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h2>Edit Society Event</h2>
+            <p class="subtitle" style="margin-bottom: 0;">Update schedule, venue, or details for this community event.</p>
+        </div>
+        <div>
+            <a th:href="@{/admin/events}" class="btn btn-secondary btn-sm">← Back to Events</a>
+        </div>
+    </div>
+
+    <div class="form-box" style="max-width: 650px; margin: 20px auto;">
+        <h2>Update Event Details</h2>
+        <form th:action="@{'/admin/events/edit/' + ${event.id}}" method="post">
+            <label for="title">Event Title</label>
+            <input type="text" id="title" name="title" th:value="${event.title}" required="required"/>
+
+            <label for="description">Event Description</label>
+            <textarea id="description" name="description" required="required" rows="5" th:text="${event.description}"></textarea>
+
+            <label for="eventDateTime">Date &amp; Time</label>
+            <input type="datetime-local" id="eventDateTime" name="eventDateTime" th:value="${event.eventDateTime}" required="required"/>
+
+            <label for="location">Venue / Location</label>
+            <input type="text" id="location" name="location" th:value="${event.location}" required="required"/>
+
+            <label for="organizer">Organizer / Committee</label>
+            <input type="text" id="organizer" name="organizer" th:value="${event.organizer}" required="required"/>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                <a th:href="@{/admin/events}" class="btn btn-secondary" style="flex: 1; text-align: center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

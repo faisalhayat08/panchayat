@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Services')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <h2>Request a Service</h2>
+    <p class="subtitle">Book a plumber, electrician, cleaning staff, and more directly from the society office.</p>
+
+    <div class="form-box" style="max-width: 560px;">
+        <h2>New Service Request</h2>
+        <form th:action="@{/services}" method="post">
+            <label for="serviceType">Service Type</label>
+            <select id="serviceType" name="serviceType" required="required">
+                <option th:each="type : ${serviceTypes}" th:value="${type}" th:text="${type}">TYPE</option>
+            </select>
+
+            <label for="description">Describe what you need</label>
+            <textarea id="description" name="description" placeholder="e.g. Kitchen tap is leaking, need it fixed" required="required"></textarea>
+
+            <label for="preferredDate">Preferred Date (optional)</label>
+            <input type="date" id="preferredDate" name="preferredDate"/>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:22px;">Submit Request</button>
+        </form>
+    </div>
+
+    <h2>Your Service Requests</h2>
+    <div th:if="${requests.isEmpty()}" class="empty-state">You haven't raised any service requests yet.</div>
+
+    <table th:if="${!requests.isEmpty()}">
+        <thead>
+        <tr><th>Date</th><th>Type</th><th>Description</th><th>Preferred Date</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="r : ${requests}">
+            <td th:text="${#temporals.format(r.createdAt, 'dd MMM yyyy, hh:mm a')}">date</td>
+            <td><span class="tag-pill" th:text="${r.serviceType}">Type</span></td>
+            <td th:text="${r.description}">desc</td>
+            <td th:text="${r.preferredDate} ?: '—'">date</td>
+            <td>
+                <span th:switch="${r.status}">
+                    <span th:case="'PENDING'" class="badge badge-pending">Pending</span>
+                    <span th:case="'ASSIGNED'" class="badge badge-assigned">Assigned</span>
+                    <span th:case="'COMPLETED'" class="badge badge-completed">Completed</span>
+                    <span th:case="'CANCELLED'" class="badge badge-cancelled">Cancelled</span>
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

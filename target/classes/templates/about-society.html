@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('About Society')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <h2>About Our Society</h2>
+    <p class="subtitle">History, ongoing projects, facility timings, and society rules &mdash; all in one place.</p>
+
+    <div class="card" style="margin-bottom: 28px;">
+        <h3>Society History</h3>
+        <p>Our society was established to provide a safe, well-managed and community-driven living space
+           for all residents. Over the years it has grown to include modern amenities such as a clubhouse,
+           gym, swimming pool and dedicated garden/walking areas, all maintained through resident
+           contributions and the elected society committee.</p>
+    </div>
+
+    <h3>Facility Timings</h3>
+    <div class="grid grid-2" style="margin-bottom: 28px;">
+        <div class="card" th:each="facility : ${facilities}">
+            <h3 th:text="${facility.facilityName}">Facility</h3>
+            <p><strong>Timings:</strong> <span th:text="${facility.timings}">timings</span></p>
+            <p class="meta" th:text="${facility.notes}">notes</p>
+        </div>
+    </div>
+
+    <h3>Projects &mdash; New, Ongoing &amp; Completed</h3>
+    <table style="margin-bottom: 28px;">
+        <thead>
+        <tr><th>Project</th><th>Status</th><th>Start Date</th><th>Expected Completion</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="project : ${projects}">
+            <td>
+                <strong th:text="${project.title}">Title</strong><br/>
+                <span class="meta" th:text="${project.description}">desc</span>
+            </td>
+            <td>
+                <span th:switch="${project.status}">
+                    <span th:case="'ONGOING'" class="badge badge-progress">Ongoing</span>
+                    <span th:case="'UPCOMING'" class="badge badge-pending">Upcoming</span>
+                    <span th:case="'COMPLETED'" class="badge badge-resolved">Completed</span>
+                </span>
+            </td>
+            <td th:text="${project.startDate}">date</td>
+            <td th:text="${project.expectedCompletionDate} ?: '—'">date</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3>Society Rule Book</h3>
+    <div class="card">
+        <ul>
+            <li>Visitors must register at the security gate.</li>
+            <li>Loud music/parties are not allowed after 10:00 PM.</li>
+            <li>Two-wheeler and four-wheeler parking is only in allotted slots.</li>
+            <li>Maintenance charges must be paid by the 10th of every month.</li>
+            <li>Pets must be leashed in common areas.</li>
+            <li>Any renovation work must be intimated to the office in advance.</li>
+        </ul>
+        <p class="meta">See the <a th:href="@{/notices}">Notice Board</a> for the full, official rule book and updates.</p>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Management Registration')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<div class="form-box" style="max-width: 520px;">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <span style="font-size: 38px;">🏛️</span>
+        <h2 style="margin-top: 8px;">Management / Committee Registration</h2>
+        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 0;">
+            Register as a society committee member or management office staff.
+        </p>
+    </div>
+
+    <div style="background: #e8f4fd; border: 1px solid #b8daff; border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px; font-size: 13.5px; color: #004085;">
+        🔒 <strong>Verification Policy:</strong> Society Main Heads &amp; Presidents can enter the <strong>Master Passcode</strong> for instant account activation. Standard staff registrations without a passcode are placed in the admin queue for review.
+    </div>
+
+    <p th:if="${error}" class="form-error" th:text="${error}">Error message</p>
+
+    <form th:action="@{/register-admin}" th:object="${user}" method="post">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" th:field="*{fullName}" placeholder="e.g. Ramesh Kumar" required="required"/>
+
+        <label for="email">Official / Committee Email</label>
+        <input type="email" id="email" th:field="*{email}" placeholder="e.g. secretary@panchayat.local" required="required"/>
+
+        <label for="phone">Contact Phone Number</label>
+        <input type="tel" id="phone" th:field="*{phone}" placeholder="e.g. 9876543210"/>
+
+        <label for="committeeRole">Designated Committee Role</label>
+        <select id="committeeRole" th:field="*{committeeRole}" required="required">
+            <option value="">-- Select Committee Role --</option>
+            <option value="Society Secretary">Society Secretary</option>
+            <option value="Society President">Society President</option>
+            <option value="Society Treasurer">Society Treasurer</option>
+            <option value="Security In-Charge">Security In-Charge</option>
+            <option value="Maintenance Supervisor">Maintenance Supervisor</option>
+            <option value="Cultural & Events Head">Cultural &amp; Events Head</option>
+            <option value="General Committee Member">General Committee Member</option>
+            <option value="Administrative Office Staff">Administrative Office Staff</option>
+        </select>
+
+        <label for="flatNumber">Flat / Office Desk (Optional)</label>
+        <input type="text" id="flatNumber" th:field="*{flatNumber}" placeholder="e.g. Office Room 1 or B-402"/>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" th:field="*{password}" required="required"/>
+
+        <div style="background: #fef9e7; border: 1px dashed #d4ac0d; border-radius: 6px; padding: 12px; margin-top: 16px;">
+            <label for="masterCode" style="margin-top:0; color:#7d5a00; font-weight:600;">🔑 Society Master Passcode (For Main Management)</label>
+            <input type="password" id="masterCode" name="masterCode" placeholder="Enter master passcode for instant approval" autocomplete="off"/>
+            <p style="font-size: 12px; color: #7d5a00; margin: 4px 0 0;">
+                💡 <strong>Are you the Main Head / President?</strong> Enter the society master passcode (default: <code>PANCHAYAT2026</code>) to activate your admin account immediately. Leave blank if applying for standard admin review.
+            </p>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:24px; padding: 12px;">Submit Management Registration</button>
+    </form>
+
+    <div style="border-top: 1px solid var(--border); margin-top: 24px; padding-top: 16px; text-align: center; font-size: 13.5px;">
+        <p style="margin: 4px 0;">Are you a resident? <a th:href="@{/register}">Register as Society Resident</a></p>
+        <p style="margin: 4px 0;">Already have an approved account? <a th:href="@{/login}">Login here</a></p>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

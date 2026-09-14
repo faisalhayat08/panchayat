@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin - Edit Notice')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h2>Edit Society Notice</h2>
+            <p class="subtitle" style="margin-bottom: 0;">Update notice information on the public board.</p>
+        </div>
+        <div>
+            <a th:href="@{/admin/notices}" class="btn btn-secondary btn-sm">← Back to Notices</a>
+        </div>
+    </div>
+
+    <div class="form-box" style="max-width: 650px; margin: 20px auto;">
+        <h2>Update Notice Details</h2>
+        <form th:action="@{'/admin/notices/edit/' + ${notice.id}}" method="post">
+            <label for="title">Notice Title</label>
+            <input type="text" id="title" name="title" th:value="${notice.title}" required="required"/>
+
+            <label for="content">Notice Content / Guidelines</label>
+            <textarea id="content" name="content" required="required" rows="8" th:text="${notice.content}"></textarea>
+
+            <label for="postedBy">Posted By / Department</label>
+            <input type="text" id="postedBy" name="postedBy" th:value="${notice.postedBy}"/>
+
+            <div class="checkbox-row" style="margin: 16px 0;">
+                <input type="checkbox" id="important" name="important" value="true" th:checked="${notice.important}"/>
+                <label for="important" style="margin:0; cursor:pointer;"><strong>Mark as High Priority / Important Notice</strong></label>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                <a th:href="@{/admin/notices}" class="btn btn-secondary" style="flex: 1; text-align: center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

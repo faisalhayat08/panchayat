@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} + ' | Digital Panchayat'">Digital Panchayat</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <!-- CSRF token exposed for the JS-based voice upload (fetch bypasses
+         Thymeleaf's automatic form CSRF injection, so we read it manually). -->
+    <meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:if="${_csrf != null}" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+    <div th:fragment="nav">
+        <div class="topbar">
+            <div class="container">
+                <span>Digital Panchayat &mdash; Society Management Platform</span>
+                <span sec:authorize="isAuthenticated()">
+                    Signed in as <span sec:authentication="name">user</span>
+                </span>
+            </div>
+        </div>
+        <nav class="navbar">
+            <div class="container">
+                <a class="brand" th:href="@{/}">
+                    <span class="emblem">🏛️</span> Digital Panchayat
+                </a>
+                <div class="nav-links">
+                    <a th:href="@{/}">Home</a>
+                    <a th:href="@{/about-society}">About Society</a>
+                    <a th:href="@{/notices}">Notices</a>
+                    <a th:href="@{/events}">Events</a>
+                    <a sec:authorize="isAuthenticated() and hasRole('RESIDENT')" th:href="@{/complaints}">Complaints</a>
+                    <a sec:authorize="isAuthenticated() and hasRole('RESIDENT')" th:href="@{/services}">Services</a>
+                    <a sec:authorize="isAuthenticated() and hasRole('ADMIN')" th:href="@{/admin/dashboard}">Admin Dashboard</a>
+                    <a sec:authorize="isAuthenticated() and hasRole('ADMIN')" th:href="@{/admin/manage-admins}">Manage Admins</a>
+                    <a sec:authorize="isAuthenticated() and hasRole('RESIDENT')" th:href="@{/dashboard}">Dashboard</a>
+                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+                    </form>
+                    <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-outline btn-sm">Login</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-primary btn-sm">Register</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/register-admin}" class="btn btn-outline btn-sm" style="border-color: var(--accent); color: var(--accent);">🏛️ Management</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div th:fragment="footer">
+        <footer>
+            <div class="container">
+                <p><strong>Digital Panchayat</strong> &mdash; a single platform for society complaints, services, notices, events and information.</p>
+                <p>Built as a Java (Spring Boot) internship project by a Web Solutions Service Provider Company Java Developer.</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

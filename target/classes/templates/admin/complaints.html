@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin - Complaints')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <div>
+            <h2>Complaint Inbox &amp; Ticket Assignment</h2>
+            <p class="subtitle" style="margin-bottom: 0;">Full AI pipeline results: original voice transcription, English translation, auto-category, assignment, and status control.</p>
+        </div>
+        <div>
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div th:if="${complaints.isEmpty()}" class="empty-state">No complaints filed yet.</div>
+
+    <div class="grid grid-2">
+        <div class="card" th:each="c : ${complaints}">
+            <div style="display:flex; justify-content: space-between; align-items:flex-start;">
+                <div>
+                    <h3 th:text="${c.resident != null ? c.resident.fullName + ' — Flat ' + c.resident.flatNumber : 'Unknown resident'}" style="margin-bottom:4px;">Resident</h3>
+                    <p class="meta" style="margin:0;" th:text="${#temporals.format(c.createdAt, 'dd MMM yyyy, hh:mm a')}">date</p>
+                </div>
+                <span th:switch="${c.status}">
+                    <span th:case="'NEW'" class="badge badge-new">New</span>
+                    <span th:case="'ACKNOWLEDGED'" class="badge badge-progress">Acknowledged</span>
+                    <span th:case="'IN_PROGRESS'" class="badge badge-progress">In Progress</span>
+                    <span th:case="'RESOLVED'" class="badge badge-resolved">Resolved</span>
+                    <span th:case="'REJECTED'" class="badge badge-cancelled">Rejected</span>
+                </span>
+            </div>
+
+            <div style="margin: 12px 0;">
+                <span class="tag-pill" th:text="${c.category}">Category</span>
+                <span th:if="${c.assignedTo != null and !c.assignedTo.isEmpty()}" class="badge badge-assigned" style="margin-left: 4px;">
+                    👤 Assigned to: <strong th:text="${c.assignedTo}">Staff</strong>
+                </span>
+                <span th:if="${c.assignedTo == null or c.assignedTo.isEmpty()}" class="badge badge-pending" style="margin-left: 4px;">
+                    ⚠️ Unassigned
+                </span>
+            </div>
+
+            <div style="background: var(--bg); border-radius: 6px; padding: 12px; margin-bottom: 12px; font-size: 13.5px;">
+                <p style="margin: 4px 0;"><strong>Original Voice (<span th:text="${c.detectedLanguage}">Hindi</span>):</strong> <span th:text="${c.transcribedText}">text</span></p>
+                <p style="margin: 4px 0;"><strong>English Translation:</strong> <span th:text="${c.translatedText}">text</span></p>
+                <p th:if="${c.adminRemarks != null and !c.adminRemarks.isEmpty()}" style="margin: 4px 0; color: var(--primary-dark);">
+                    <strong>Admin Remarks:</strong> <span th:text="${c.adminRemarks}">remarks</span>
+                </p>
+            </div>
+
+            <form th:action="@{'/admin/complaints/' + ${c.id} + '/status'}" method="post" style="border-top: 1px solid var(--border); padding-top: 12px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <select name="status" style="flex:1; min-width:140px;">
+                        <option th:each="s : ${statuses}" th:value="${s}" th:selected="${s == c.status}" th:text="${s}">STATUS</option>
+                    </select>
+                    <select name="assignedTo" style="flex:1; min-width:160px;">
+                        <option value="">-- Assign Committee Staff --</option>
+                        <option th:each="adm : ${admins}" 
+                                th:value="${adm.fullName + ' (' + (adm.committeeRole != null ? adm.committeeRole : 'Admin') + ')'}" 
+                                th:selected="${c.assignedTo != null and c.assignedTo.contains(adm.fullName)}" 
+                                th:text="${adm.fullName + ' (' + (adm.committeeRole != null ? adm.committeeRole : 'Admin') + ')'}">Admin Name</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" name="remarks" placeholder="Add resolution note / remarks..." th:value="${c.adminRemarks}" style="flex:1;"/>
+                    <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap;">Update Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

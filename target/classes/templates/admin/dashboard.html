@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Society Management Dashboard')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <div>
+            <h2>Society Management Dashboard</h2>
+            <p class="subtitle" style="margin-bottom: 0;">Real-time society overview, resident complaints, service bookings, and committee administration.</p>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <a th:href="@{/admin/manage-admins}" class="btn btn-secondary btn-sm">👥 Committee Members (<span th:text="${approvedAdmins.size()}">0</span>)</a>
+            <a th:if="${!pendingAdmins.isEmpty()}" th:href="@{/admin/manage-admins}" class="btn btn-primary btn-sm" style="background: var(--danger); color: #fff;">
+                ⚠️ <span th:text="${pendingAdmins.size()}">0</span> Pending Admin Approvals
+            </a>
+        </div>
+    </div>
+
+    <!-- Society High-Level Stat Cards -->
+    <div class="stat-row">
+        <div class="stat-box">
+            <div class="num" th:text="${residents.size()}">0</div>
+            <div class="label">Registered Residents</div>
+        </div>
+        <div class="stat-box">
+            <div class="num" th:text="${complaints.size()}">0</div>
+            <div class="label">Total Complaints (<span th:text="${newComplaintCount}" style="color:var(--danger); font-weight:700;">0</span> New)</div>
+        </div>
+        <div class="stat-box">
+            <div class="num" th:text="${requests.size()}">0</div>
+            <div class="label">Service Requests (<span th:text="${pendingRequestCount}" style="color:var(--accent-dark); font-weight:700;">0</span> Pending)</div>
+        </div>
+        <div class="stat-box">
+            <div class="num" th:text="${approvedAdmins.size()}">0</div>
+            <div class="label">Committee Staff</div>
+        </div>
+    </div>
+
+    <!-- Status Breakdown Grid -->
+    <div class="grid grid-2" style="margin-bottom: 30px;">
+        <!-- Complaints Breakdown Card -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin:0;">🎙️ Complaints Breakdown</h3>
+                <a th:href="@{/admin/complaints}" class="btn btn-secondary btn-sm">View All</a>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                <div style="flex:1; min-width:80px; text-align:center; padding:10px; background:#fdf2f2; border-radius:6px;">
+                    <div style="font-size:20px; font-weight:700; color:var(--danger);" th:text="${newComplaintCount}">0</div>
+                    <div style="font-size:12px; color:var(--text-muted);">New</div>
+                </div>
+                <div style="flex:1; min-width:80px; text-align:center; padding:10px; background:#fff8e6; border-radius:6px;">
+                    <div style="font-size:20px; font-weight:700; color:#b7791f;" th:text="${ackComplaintCount}">0</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Acknowledged</div>
+                </div>
+                <div style="flex:1; min-width:80px; text-align:center; padding:10px; background:#edf2f7; border-radius:6px;">
+                    <div style="font-size:20px; font-weight:700; color:#2b6cb0;" th:text="${inProgComplaintCount}">0</div>
+                    <div style="font-size:12px; color:var(--text-muted);">In Progress</div>
+                </div>
+                <div style="flex:1; min-width:80px; text-align:center; padding:10px; background:#e6fffa; border-radius:6px;">
+                    <div style="font-size:20px; font-weight:700; color:#234e52;" th:text="${resolvedComplaintCount}">0</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Resolved</div>
+                </div>
+                <div style="flex:1; min-width:80px; text-align:center; padding:10px; background:#f7fafc; border-radius:6px;">
+                    <div style="font-size:20px; font-weight:700; color:#718096;" th:text="${rejectedComplaintCount}">0</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Rejected</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Requests Breakdown Card -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin:0;">🧰 Service Requests Breakdown</h3>
+                <a th:href="@{/admin/service-requests}" class="btn btn-secondary btn-sm">View All</a>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                <div style="flex:1; min-width:80px; text-align:center; padding:10px; background:#fff8e6; border-radius:6px;">
+                    <div style="font-size:20px; font-weight:700; color:#b7791f;" th:text="${pendingRequestCount}">0</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Pending</div>
+                </div>
+                <div style="flex:1; min-width:80px; text-align:center; padding:10px; background:#ebf8ff; border-radius:6px;">
+                    <div style="font-size:20px; font-weight:700; color:#2b6cb0;" th:text="${assignedRequestCount}">0</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Assigned</div>
+                </div>
+                <div style="flex:1; min-width:80px; text-align:center; padding:10px; background:#f0fff4; border-radius:6px;">
+                    <div style="font-size:20px; font-weight:700; color:#22543d;" th:text="${completedRequestCount}">0</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Completed</div>
+                </div>
+                <div style="flex:1; min-width:80px; text-align:center; padding:10px; background:#f7fafc; border-radius:6px;">
+                    <div style="font-size:20px; font-weight:700; color:#718096;" th:text="${cancelledRequestCount}">0</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Cancelled</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Navigation Modules -->
+    <div class="grid grid-4" style="margin-bottom: 30px;">
+        <div class="card">
+            <h3>👥 Committee &amp; Approvals</h3>
+            <p style="font-size:13.5px; color:var(--text-muted);">Approve new admin accounts &amp; oversee office staff.</p>
+            <a th:href="@{/admin/manage-admins}" class="btn btn-secondary btn-sm" style="width:100%; text-align:center;">Manage Admins</a>
+        </div>
+        <div class="card">
+            <h3>📥 Voice / Text Inbox</h3>
+            <p style="font-size:13.5px; color:var(--text-muted);">AI transcribed &amp; classified resident tickets.</p>
+            <a th:href="@{/admin/complaints}" class="btn btn-primary btn-sm" style="width:100%; text-align:center;">Open Complaints</a>
+        </div>
+        <div class="card">
+            <h3>🧰 Service Requests</h3>
+            <p style="font-size:13.5px; color:var(--text-muted);">Assign technicians to resident bookings.</p>
+            <a th:href="@{/admin/service-requests}" class="btn btn-primary btn-sm" style="width:100%; text-align:center;">Open Requests</a>
+        </div>
+        <div class="card">
+            <h3>📢 Notices &amp; Events</h3>
+            <p style="font-size:13.5px; color:var(--text-muted);">Full CRUD for notice board and society events.</p>
+            <div style="display:flex; gap:6px;">
+                <a th:href="@{/admin/notices}" class="btn btn-secondary btn-sm" style="flex:1; text-align:center;">Notices</a>
+                <a th:href="@{/admin/events}" class="btn btn-secondary btn-sm" style="flex:1; text-align:center;">Events</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Open Items Requiring Immediate Attention -->
+    <div class="grid grid-2" style="margin-bottom: 30px;">
+        <!-- Unresolved Complaints -->
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="margin:0;">🚨 Open Complaints Requiring Attention</h3>
+                <a th:href="@{/admin/complaints}" style="font-size:13px;">View all →</a>
+            </div>
+            <div th:if="${urgentComplaints.isEmpty()}" class="empty-state" style="padding:15px 0;">No unresolved complaints! 👍</div>
+            <table th:if="${!urgentComplaints.isEmpty()}">
+                <thead><tr><th>Resident</th><th>Category</th><th>Assigned</th><th>Status</th></tr></thead>
+                <tbody>
+                <tr th:each="c : ${urgentComplaints}">
+                    <td>
+                        <strong th:text="${c.resident != null ? c.resident.fullName : 'Unknown'}">Resident</strong>
+                        <div style="font-size:12px; color:var(--text-muted);" th:text="${c.resident != null ? c.resident.flatNumber : ''}">Flat</div>
+                    </td>
+                    <td><span class="tag-pill" th:text="${c.category}">Category</span></td>
+                    <td th:text="${c.assignedTo} ?: 'Unassigned'" style="font-size:13px;">Unassigned</td>
+                    <td>
+                        <span th:switch="${c.status}">
+                            <span th:case="'NEW'" class="badge badge-new">New</span>
+                            <span th:case="*" class="badge badge-progress" th:text="${c.status}">status</span>
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Open Service Requests -->
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="margin:0;">🔧 Active Service Requests</h3>
+                <a th:href="@{/admin/service-requests}" style="font-size:13px;">View all →</a>
+            </div>
+            <div th:if="${urgentRequests.isEmpty()}" class="empty-state" style="padding:15px 0;">No pending service requests! 🎉</div>
+            <table th:if="${!urgentRequests.isEmpty()}">
+                <thead><tr><th>Resident</th><th>Service</th><th>Pref. Date</th><th>Status</th></tr></thead>
+                <tbody>
+                <tr th:each="r : ${urgentRequests}">
+                    <td>
+                        <strong th:text="${r.resident != null ? r.resident.fullName : 'Unknown'}">Resident</strong>
+                        <div style="font-size:12px; color:var(--text-muted);" th:text="${r.resident != null ? r.resident.flatNumber : ''}">Flat</div>
+                    </td>
+                    <td><span class="tag-pill" th:text="${r.serviceType}">Type</span></td>
+                    <td th:text="${r.preferredDate} ?: 'Immediate'" style="font-size:13px;">Date</td>
+                    <td>
+                        <span th:switch="${r.status}">
+                            <span th:case="'PENDING'" class="badge badge-pending">Pending</span>
+                            <span th:case="'ASSIGNED'" class="badge badge-assigned">Assigned</span>
+                            <span th:case="*" class="badge badge-completed" th:text="${r.status}">Status</span>
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

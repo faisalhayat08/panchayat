@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Events')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <h2>Upcoming Events</h2>
+    <p class="subtitle">Festivals, meetings and community activities happening in the society.</p>
+
+    <div th:if="${events.isEmpty()}" class="empty-state">No events scheduled yet.</div>
+
+    <div class="grid grid-3">
+        <div class="card" th:each="event : ${events}">
+            <h3 th:text="${event.title}">Event title</h3>
+            <p th:text="${event.description}">Description</p>
+            <p class="meta">📅 <span th:text="${#temporals.format(event.eventDateTime, 'dd MMM yyyy, hh:mm a')}">date</span></p>
+            <p class="meta">📍 <span th:text="${event.location}">Location</span></p>
+            <p class="meta">Organized by <span th:text="${event.organizer}">Committee</span></p>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

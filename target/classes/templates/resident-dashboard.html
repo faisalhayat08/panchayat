@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Dashboard')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <h2>Welcome, <span th:text="${user.fullName}">Resident</span></h2>
+    <p class="subtitle">Flat <span th:text="${user.flatNumber}">A-204</span> &mdash; here's your quick access panel.</p>
+
+    <div class="grid grid-3">
+        <div class="card">
+            <h3>🎙️ File a Complaint</h3>
+            <p>Press one button and speak your problem. AI handles the rest.</p>
+            <a th:href="@{/complaints}" class="btn btn-primary btn-sm">Go to Complaints</a>
+        </div>
+        <div class="card">
+            <h3>🧰 Request a Service</h3>
+            <p>Book a plumber, electrician, cleaner and more.</p>
+            <a th:href="@{/services}" class="btn btn-primary btn-sm">Go to Services</a>
+        </div>
+        <div class="card">
+            <h3>📜 Society Info</h3>
+            <p>Rules, facility timings, ongoing projects and history.</p>
+            <a th:href="@{/about-society}" class="btn btn-secondary btn-sm">View Society Info</a>
+        </div>
+        <div class="card">
+            <h3>📢 Notices</h3>
+            <p>Latest announcements from the committee.</p>
+            <a th:href="@{/notices}" class="btn btn-secondary btn-sm">View Notices</a>
+        </div>
+        <div class="card">
+            <h3>🎉 Events</h3>
+            <p>Upcoming celebrations and meetings.</p>
+            <a th:href="@{/events}" class="btn btn-secondary btn-sm">View Events</a>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

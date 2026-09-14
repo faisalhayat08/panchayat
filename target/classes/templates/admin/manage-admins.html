@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin - Manage Committee & Approvals')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <div>
+            <h2>Committee &amp; Admin Management</h2>
+            <p class="subtitle" style="margin-bottom: 0;">Review pending management registrations and manage active society committee members.</p>
+        </div>
+        <div>
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Feedback Alerts -->
+    <div th:if="${param.approved != null}" class="form-success">
+        ✅ Administrator account has been successfully approved! The committee member can now log in.
+    </div>
+    <div th:if="${param.rejected != null}" class="form-error">
+        🚫 Pending registration has been rejected and removed.
+    </div>
+
+    <!-- Pending Admin Approvals Section -->
+    <div class="card" style="margin-bottom: 30px; border-left: 4px solid var(--accent);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0;">⏳ Pending Admin Approvals (<span th:text="${pendingAdmins.size()}">0</span>)</h3>
+            <span th:if="${!pendingAdmins.isEmpty()}" class="badge badge-important">Action Required</span>
+        </div>
+        <p class="meta" style="margin-top: 6px; margin-bottom: 16px;">
+            These committee/management registrations are waiting for an administrator's verification.
+        </p>
+
+        <div th:if="${pendingAdmins.isEmpty()}" class="empty-state" style="padding: 20px 0;">
+            🎉 No pending admin registrations! All management accounts are up to date.
+        </div>
+
+        <table th:if="${!pendingAdmins.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>Applicant Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Requested Role</th>
+                    <th>Applied On</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="admin : ${pendingAdmins}">
+                    <td><strong th:text="${admin.fullName}">Name</strong></td>
+                    <td th:text="${admin.email}">email@panchayat.local</td>
+                    <td th:text="${admin.phone} ?: '—'">9876543210</td>
+                    <td><span class="tag-pill" th:text="${admin.committeeRole} ?: 'Committee Member'">Secretary</span></td>
+                    <td th:text="${#temporals.format(admin.createdAt, 'dd MMM yyyy, hh:mm a')}">date</td>
+                    <td style="text-align: right;">
+                        <div style="display: inline-flex; gap: 8px;">
+                            <form th:action="@{'/admin/manage-admins/' + ${admin.id} + '/approve'}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-primary btn-sm" style="background: var(--primary); color: #fff;">Approve</button>
+                            </form>
+                            <form th:action="@{'/admin/manage-admins/' + ${admin.id} + '/reject'}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to reject and remove this registration?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Approved Active Admins Section -->
+    <div class="card">
+        <h3 style="margin-top: 0; margin-bottom: 16px;">👥 Active Society Committee &amp; Management Staff (<span th:text="${approvedAdmins.size()}">0</span>)</h3>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Committee Designation</th>
+                    <th>Status</th>
+                    <th>Joined On</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="admin : ${approvedAdmins}">
+                    <td><strong th:text="${admin.fullName}">Admin Name</strong></td>
+                    <td th:text="${admin.email}">email</td>
+                    <td th:text="${admin.phone} ?: '—'">phone</td>
+                    <td><span class="tag-pill" th:text="${admin.committeeRole} ?: 'Administrator'">Designation</span></td>
+                    <td><span class="badge badge-resolved">Active &amp; Approved</span></td>
+                    <td th:text="${#temporals.format(admin.createdAt, 'dd MMM yyyy')}">date</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Notices')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <h2>Notice Board</h2>
+    <p class="subtitle">Official announcements and rules from the society committee.</p>
+
+    <div th:if="${notices.isEmpty()}" class="empty-state">No notices posted yet.</div>
+
+    <div class="grid grid-2">
+        <div class="card" th:each="notice : ${notices}">
+            <span th:if="${notice.important}" class="badge badge-important">Important</span>
+            <h3 th:text="${notice.title}">Title</h3>
+            <p style="white-space: pre-line;" th:text="${notice.content}">Content</p>
+            <p class="meta">
+                Posted by <span th:text="${notice.postedBy}">Committee</span> on
+                <span th:text="${#temporals.format(notice.postedAt, 'dd MMM yyyy, hh:mm a')}">date</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

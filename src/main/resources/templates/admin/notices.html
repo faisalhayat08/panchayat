@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin - Notices')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <div>
+            <h2>Manage Notices &amp; Rules</h2>
+            <p class="subtitle" style="margin-bottom: 0;">Create, edit, or remove announcements and society rulebook entries.</p>
+        </div>
+        <div>
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Feedback messages -->
+    <div th:if="${param.updated != null}" class="form-success">
+        ✅ Notice successfully updated!
+    </div>
+    <div th:if="${param.deleted != null}" class="form-success">
+        🗑️ Notice deleted successfully.
+    </div>
+
+    <div class="form-box" style="max-width: 650px; margin: 20px auto 40px;">
+        <h2>Post a New Notice</h2>
+        <form th:action="@{/admin/notices}" method="post">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" placeholder="e.g. Lift Maintenance Schedule" required="required"/>
+
+            <label for="content">Content / Guidelines</label>
+            <textarea id="content" name="content" placeholder="Write the announcement details here..." required="required" rows="5"></textarea>
+
+            <label for="postedBy">Posted By / Department (Optional)</label>
+            <input type="text" id="postedBy" name="postedBy" placeholder="e.g. Society Committee or Secretary Office"/>
+
+            <div class="checkbox-row" style="margin: 14px 0;">
+                <input type="checkbox" id="important" name="important" value="true"/>
+                <label for="important" style="margin:0; cursor:pointer;"><strong>Mark as High Priority / Important Notice</strong></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:16px;">Post Notice to Board</button>
+        </form>
+    </div>
+
+    <h3>All Active Notices (<span th:text="${notices.size()}">0</span>)</h3>
+    <div th:if="${notices.isEmpty()}" class="empty-state">No notices posted yet.</div>
+    <div class="grid grid-2" th:if="${!notices.isEmpty()}">
+        <div class="card" th:each="notice : ${notices}" style="display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+                    <span th:if="${notice.important}" class="badge badge-important">Important</span>
+                    <span th:if="${!notice.important}" class="badge badge-assigned">Notice</span>
+                    <span class="meta" th:text="${#temporals.format(notice.postedAt, 'dd MMM yyyy, hh:mm a')}">date</span>
+                </div>
+                <h3 th:text="${notice.title}" style="margin-bottom: 8px;">Title</h3>
+                <p style="white-space: pre-line; color: var(--text);" th:text="${notice.content}">Content</p>
+                <p class="meta" th:if="${notice.postedBy != null and !notice.postedBy.isEmpty()}" style="margin-top: 6px;">
+                    Posted by: <strong th:text="${notice.postedBy}">Society Committee</strong>
+                </p>
+            </div>
+
+            <!-- Action buttons: Edit & Delete -->
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px; border-top: 1px solid var(--border); padding-top: 12px;">
+                <a th:href="@{'/admin/notices/edit/' + ${notice.id}}" class="btn btn-secondary btn-sm">✏️ Edit</a>
+                <form th:action="@{'/admin/notices/delete/' + ${notice.id}}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to permanently delete this notice?');">
+                    <button type="submit" class="btn btn-danger btn-sm">🗑️ Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

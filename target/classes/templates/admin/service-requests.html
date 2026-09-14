@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin - Service Requests')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <div>
+            <h2>Service Requests &amp; Technician Dispatch</h2>
+            <p class="subtitle" style="margin-bottom: 0;">Plumber, electrician, cleaning, pest control, and facility maintenance bookings across the society.</p>
+        </div>
+        <div>
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div th:if="${requests.isEmpty()}" class="empty-state">No service requests yet.</div>
+
+    <div class="grid grid-2" th:if="${!requests.isEmpty()}">
+        <div class="card" th:each="r : ${requests}">
+            <div style="display:flex; justify-content: space-between; align-items:flex-start;">
+                <div>
+                    <h3 th:text="${r.resident != null ? r.resident.fullName + ' — Flat ' + r.resident.flatNumber : 'Unknown resident'}" style="margin-bottom:4px;">Resident</h3>
+                    <p class="meta" style="margin:0;" th:text="${#temporals.format(r.createdAt, 'dd MMM yyyy, hh:mm a')}">date</p>
+                </div>
+                <span th:switch="${r.status}">
+                    <span th:case="'PENDING'" class="badge badge-pending">Pending</span>
+                    <span th:case="'ASSIGNED'" class="badge badge-assigned">Assigned</span>
+                    <span th:case="'COMPLETED'" class="badge badge-completed">Completed</span>
+                    <span th:case="'CANCELLED'" class="badge badge-cancelled">Cancelled</span>
+                </span>
+            </div>
+
+            <div style="margin: 12px 0;">
+                <span class="tag-pill" th:text="${r.serviceType}">Type</span>
+                <span class="meta" style="margin-left: 6px;">
+                    📅 Preferred: <strong th:text="${r.preferredDate} ?: 'Immediate / As soon as possible'">Date</strong>
+                </span>
+            </div>
+
+            <div style="background: var(--bg); border-radius: 6px; padding: 12px; margin-bottom: 12px; font-size: 13.5px;">
+                <p style="margin: 4px 0;"><strong>Requirement:</strong> <span th:text="${r.description}">Description</span></p>
+                <p th:if="${r.assignedTo != null and !r.assignedTo.isEmpty()}" style="margin: 4px 0; color: #1a4b9c;">
+                    <strong>Assigned Handler:</strong> <span th:text="${r.assignedTo}">Staff</span>
+                </p>
+                <p th:if="${r.adminRemarks != null and !r.adminRemarks.isEmpty()}" style="margin: 4px 0; color: var(--primary-dark);">
+                    <strong>Remarks:</strong> <span th:text="${r.adminRemarks}">remarks</span>
+                </p>
+            </div>
+
+            <form th:action="@{'/admin/service-requests/' + ${r.id} + '/status'}" method="post" style="border-top: 1px solid var(--border); padding-top: 12px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <select name="status" style="flex:1; min-width:140px;">
+                        <option th:each="s : ${statuses}" th:value="${s}" th:selected="${s == r.status}" th:text="${s}">STATUS</option>
+                    </select>
+                    <select name="assignedTo" style="flex:1; min-width:160px;">
+                        <option value="">-- Assign Staff / Tech --</option>
+                        <option th:each="adm : ${admins}" 
+                                th:value="${adm.fullName + ' (' + (adm.committeeRole != null ? adm.committeeRole : 'Admin') + ')'}" 
+                                th:selected="${r.assignedTo != null and r.assignedTo.contains(adm.fullName)}" 
+                                th:text="${adm.fullName + ' (' + (adm.committeeRole != null ? adm.committeeRole : 'Admin') + ')'}">Admin Name</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" name="remarks" placeholder="Dispatch note / status remarks..." th:value="${r.adminRemarks}" style="flex:1;"/>
+                    <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap;">Update Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

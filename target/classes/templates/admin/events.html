@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin - Events')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <div>
+            <h2>Manage Society Events</h2>
+            <p class="subtitle" style="margin-bottom: 0;">Create, reschedule, or cancel community events, celebrations, and AGMs.</p>
+        </div>
+        <div>
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Feedback messages -->
+    <div th:if="${param.updated != null}" class="form-success">
+        ✅ Event details successfully updated!
+    </div>
+    <div th:if="${param.deleted != null}" class="form-success">
+        🗑️ Event removed from schedule.
+    </div>
+
+    <div class="form-box" style="max-width: 650px; margin: 20px auto 40px;">
+        <h2>Create a New Society Event</h2>
+        <form th:action="@{/admin/events}" method="post">
+            <label for="title">Event Title</label>
+            <input type="text" id="title" name="title" placeholder="e.g. Diwali Mela & Cultural Evening" required="required"/>
+
+            <label for="description">Event Description</label>
+            <textarea id="description" name="description" placeholder="Details about timings, activities, and participation..." required="required" rows="4"></textarea>
+
+            <label for="eventDateTime">Date &amp; Time</label>
+            <input type="datetime-local" id="eventDateTime" name="eventDateTime" required="required"/>
+
+            <label for="location">Venue / Location</label>
+            <input type="text" id="location" name="location" placeholder="e.g. Clubhouse / Society Garden" required="required"/>
+
+            <label for="organizer">Organizer / Committee</label>
+            <input type="text" id="organizer" name="organizer" placeholder="e.g. Cultural Committee" required="required"/>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:16px;">Publish Event</button>
+        </form>
+    </div>
+
+    <h3>Scheduled Society Events (<span th:text="${events.size()}">0</span>)</h3>
+    <div th:if="${events.isEmpty()}" class="empty-state">No scheduled events found.</div>
+    <div class="grid grid-3" th:if="${!events.isEmpty()}">
+        <div class="card" th:each="event : ${events}" style="display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+                <h3 th:text="${event.title}" style="margin-bottom: 8px;">Title</h3>
+                <p th:text="${event.description}" style="color:var(--text); font-size: 14px;">Description</p>
+                <div style="background:var(--bg); border-radius:6px; padding:10px; margin-top:12px; font-size:13px;">
+                    <p class="meta" style="margin: 3px 0;">📅 <strong>Date:</strong> <span th:text="${#temporals.format(event.eventDateTime, 'dd MMM yyyy, hh:mm a')}">date</span></p>
+                    <p class="meta" style="margin: 3px 0;">📍 <strong>Venue:</strong> <span th:text="${event.location}">Location</span></p>
+                    <p class="meta" style="margin: 3px 0;" th:if="${event.organizer != null}">👥 <strong>By:</strong> <span th:text="${event.organizer}">Organizer</span></p>
+                </div>
+            </div>
+
+            <!-- Action buttons: Edit & Delete -->
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px; border-top: 1px solid var(--border); padding-top: 12px;">
+                <a th:href="@{'/admin/events/edit/' + ${event.id}}" class="btn btn-secondary btn-sm">✏️ Edit</a>
+                <form th:action="@{'/admin/events/delete/' + ${event.id}}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this event?');">
+                    <button type="submit" class="btn btn-danger btn-sm">🗑️ Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

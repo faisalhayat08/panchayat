@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Complaints')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="section container">
+    <h2>Raise a Complaint</h2>
+    <p class="subtitle">Press the button and speak your problem in your own language &mdash; our AI will transcribe, translate and route it to the society office automatically.</p>
+
+    <div class="recorder-box">
+        <form id="voiceComplaintForm" th:action="@{/complaints/voice}" method="post" enctype="multipart/form-data">
+            <input type="hidden" id="audioBlobInput" name="audioMarker" value=""/>
+        </form>
+        <button type="button" id="recordBtn" class="record-btn">🎙</button>
+        <p id="recorderStatus" class="recorder-status">Tap the mic to start recording your complaint</p>
+        <p class="recorder-hint">Tap once to start, tap again to stop &amp; submit automatically.</p>
+
+        <div class="ai-pipeline-note">
+            <strong>How it works:</strong> Voice recorded in browser &rarr; uploaded securely &rarr;
+            AI speech-to-text transcription &rarr; AI translation to English &rarr;
+            AI category classification (plumbing / electrical / cleaning / security / etc.) &rarr;
+            delivered instantly to the Admin Inbox.
+        </div>
+    </div>
+
+    <details style="margin-bottom: 30px;">
+        <summary style="cursor:pointer; font-weight:600; color: var(--primary);">Prefer to type instead?</summary>
+        <form th:action="@{/complaints/text}" method="post" style="margin-top:14px;">
+            <textarea name="text" placeholder="Describe your problem here..." required="required"></textarea>
+            <button type="submit" class="btn btn-secondary" style="margin-top:10px;">Submit Written Complaint</button>
+        </form>
+    </details>
+
+    <div th:if="${justFiled != null}" class="card" style="border-color: var(--primary); margin-bottom: 30px;">
+        <h3>✅ Complaint Filed Successfully</h3>
+        <p><strong>Detected language:</strong> <span th:text="${justFiled.detectedLanguage}">Hindi</span></p>
+        <p><strong>Transcription:</strong> <span th:text="${justFiled.transcribedText}">...</span></p>
+        <p><strong>English translation:</strong> <span th:text="${justFiled.translatedText}">...</span></p>
+        <p><strong>Auto-detected category:</strong> <span class="tag-pill" th:text="${justFiled.category}">Category</span></p>
+    </div>
+
+    <h2>Your Complaint History</h2>
+    <div th:if="${complaints.isEmpty()}" class="empty-state">You haven't filed any complaints yet.</div>
+
+    <table th:if="${!complaints.isEmpty()}">
+        <thead>
+        <tr><th>Date</th><th>Category</th><th>Complaint (English)</th><th>Status</th><th>Admin Remarks</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${complaints}">
+            <td th:text="${#temporals.format(c.createdAt, 'dd MMM yyyy, hh:mm a')}">date</td>
+            <td><span class="tag-pill" th:text="${c.category}">Category</span></td>
+            <td th:text="${c.translatedText}">text</td>
+            <td>
+                <span th:switch="${c.status}">
+                    <span th:case="'NEW'" class="badge badge-new">New</span>
+                    <span th:case="'ACKNOWLEDGED'" class="badge badge-progress">Acknowledged</span>
+                    <span th:case="'IN_PROGRESS'" class="badge badge-progress">In Progress</span>
+                    <span th:case="'RESOLVED'" class="badge badge-resolved">Resolved</span>
+                    <span th:case="'REJECTED'" class="badge badge-cancelled">Rejected</span>
+                </span>
+            </td>
+            <td th:text="${c.adminRemarks} ?: '—'">remarks</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+<script th:src="@{/js/voice-recorder.js}"></script>
+</body>
+</html>

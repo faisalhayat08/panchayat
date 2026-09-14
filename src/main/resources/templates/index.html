@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Home')}"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+
+<section class="hero">
+    <div class="container">
+        <h1>One Platform for Your Entire Society</h1>
+        <p>Raise complaints just by speaking into your phone, book plumber/cleaning/electrician services,
+           check gym &amp; facility timings, read society rules, and stay updated on notices and events &mdash;
+           all in one place.</p>
+        <div class="actions">
+            <a th:href="@{/register}" class="btn btn-primary">Get Started</a>
+            <a th:href="@{/about-society}" class="btn btn-outline">About the Society</a>
+        </div>
+    </div>
+</section>
+
+<section class="section container">
+    <h2>What you can do here</h2>
+    <p class="subtitle">Everything a resident or the committee needs, built into one app.</p>
+    <div class="grid grid-3">
+        <div class="card">
+            <h3>🎙️ Voice Complaints</h3>
+            <p>Press one button and speak your problem. AI transcribes, translates and categorizes it,
+               then sends it straight to the admin inbox &mdash; no forms to fill.</p>
+        </div>
+        <div class="card">
+            <h3>🧰 Book a Service</h3>
+            <p>Need a plumber, electrician, cleaner or pest control? Raise a service request in seconds.</p>
+        </div>
+        <div class="card">
+            <h3>🏋️ Facility Timings</h3>
+            <p>Gym, swimming pool, clubhouse and garden timings, always up to date.</p>
+        </div>
+        <div class="card">
+            <h3>📜 Society Rule Book</h3>
+            <p>All society rules and guidelines in one clear, searchable place.</p>
+        </div>
+        <div class="card">
+            <h3>🏗️ Ongoing Projects</h3>
+            <p>See what's being built or upgraded in your society, and what's coming next.</p>
+        </div>
+        <div class="card">
+            <h3>🎉 Events &amp; Notices</h3>
+            <p>Never miss an AGM, festival celebration, or important announcement again.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section container" th:if="${recentNotices != null and !recentNotices.isEmpty()}">
+    <h2>Recent Notices</h2>
+    <div class="grid grid-3">
+        <div class="card" th:each="notice : ${recentNotices}">
+            <h3 th:text="${notice.title}">Notice title</h3>
+            <p th:text="${#strings.abbreviate(notice.content, 120)}">Notice content...</p>
+            <p class="meta" th:text="${#temporals.format(notice.postedAt, 'dd MMM yyyy')}">date</p>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>
