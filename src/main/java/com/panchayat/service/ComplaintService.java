@@ -14,6 +14,11 @@ public interface ComplaintService {
      */
     Complaint fileVoiceComplaint(User resident, byte[] audioBytes, String originalFilename);
 
+    /**
+     * Full pipeline with real client-side voice transcription.
+     */
+    Complaint fileVoiceComplaint(User resident, byte[] audioBytes, String originalFilename, String clientTranscript, String clientLanguage);
+
     /** For a resident typing instead of speaking. */
     Complaint fileTextComplaint(User resident, String text);
 

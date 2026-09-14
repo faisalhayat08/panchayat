@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.panchayat.service.UserServiceImplTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.888 s -- in com.panchayat.service.UserServiceImplTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.372 s -- in com.panchayat.service.UserServiceImplTest

@@ -9,16 +9,37 @@
     <p class="subtitle">Press the button and speak your problem in your own language &mdash; our AI will transcribe, translate and route it to the society office automatically.</p>
 
     <div class="recorder-box">
+        <div class="lang-selector-wrap">
+            <label for="spokenLangSelect">🗣️ Language:</label>
+            <select id="spokenLangSelect">
+                <option value="hi-IN" selected>Hindi / Hinglish (हिन्दी)</option>
+                <option value="en-IN">English (India)</option>
+                <option value="en-US">English (US)</option>
+                <option value="ur-IN">Urdu</option>
+                <option value="bn-IN">Bengali</option>
+                <option value="mr-IN">Marathi</option>
+            </select>
+        </div>
+
         <form id="voiceComplaintForm" th:action="@{/complaints/voice}" method="post" enctype="multipart/form-data">
             <input type="hidden" id="audioBlobInput" name="audioMarker" value=""/>
         </form>
-        <button type="button" id="recordBtn" class="record-btn">🎙</button>
-        <p id="recorderStatus" class="recorder-status">Tap the mic to start recording your complaint</p>
-        <p class="recorder-hint">Tap once to start, tap again to stop &amp; submit automatically.</p>
+
+        <button type="button" id="recordBtn" class="record-btn" title="Click to speak">🎙</button>
+        <p id="recorderStatus" class="recorder-status">Tap the mic to start speaking your complaint</p>
+        <p class="recorder-hint">Tap once to speak, tap again to stop &amp; submit automatically.</p>
+
+        <div id="liveSpeechPreview" class="live-speech-box">
+            <div class="live-speech-header">
+                <span class="live-dot"></span>
+                <span>Live AI Voice Transcription:</span>
+            </div>
+            <p id="liveTranscriptText" class="live-speech-text">Listening to your voice...</p>
+        </div>
 
         <div class="ai-pipeline-note">
-            <strong>How it works:</strong> Voice recorded in browser &rarr; uploaded securely &rarr;
-            AI speech-to-text transcription &rarr; AI translation to English &rarr;
+            <strong>How it works:</strong> Live voice recorded &rarr;
+            AI speech recognition &rarr; AI translation to English &rarr;
             AI category classification (plumbing / electrical / cleaning / security / etc.) &rarr;
             delivered instantly to the Admin Inbox.
         </div>

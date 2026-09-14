@@ -48,18 +48,35 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public Complaint fileVoiceComplaint(User resident, byte[] audioBytes, String originalFilename) {
+        return fileVoiceComplaint(resident, audioBytes, originalFilename, null, null);
+    }
+
+    @Override
+    public Complaint fileVoiceComplaint(User resident, byte[] audioBytes, String originalFilename,
+                                        String clientTranscript, String clientLanguage) {
         String savedPath = saveAudioFile(audioBytes, originalFilename);
 
-        VoiceTranscriptionService.TranscriptionResult transcription = transcriptionService.transcribe(savedPath);
-        String translated = translationService.translateToEnglish(transcription.text(), transcription.detectedLanguage());
+        String text;
+        String lang;
+        if (clientTranscript != null && !clientTranscript.trim().isEmpty()) {
+            text = clientTranscript.trim();
+            lang = (clientLanguage != null && !clientLanguage.trim().isEmpty()) ? clientLanguage.trim() : "Hindi / Hinglish";
+        } else {
+            VoiceTranscriptionService.TranscriptionResult transcription = transcriptionService.transcribe(savedPath);
+            text = transcription.text();
+            lang = transcription.detectedLanguage();
+        }
+
+        String translated = translationService.translateToEnglish(text, lang);
 
         Complaint complaint = new Complaint();
         complaint.setResident(resident);
         complaint.setAudioFilePath(savedPath);
-        complaint.setTranscribedText(transcription.text());
-        complaint.setDetectedLanguage(transcription.detectedLanguage());
+        complaint.setTranscribedText(text);
+        complaint.setDetectedLanguage(lang);
         complaint.setTranslatedText(translated);
-        complaint.setCategory(classifierService.classify(translated));
+        // Classify using both translated text and original text for maximum keyword matching accuracy
+        complaint.setCategory(classifierService.classify(translated + " " + text));
         complaint.setStatus(ComplaintStatus.NEW);
         complaint.setCreatedAt(LocalDateTime.now());
 

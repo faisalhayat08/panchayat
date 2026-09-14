@@ -19,14 +19,14 @@ public class ComplaintClassifierServiceImpl implements ComplaintClassifierServic
 
     private static final Map<ComplaintCategory, String[]> KEYWORDS = new LinkedHashMap<>();
     static {
-        KEYWORDS.put(ComplaintCategory.PLUMBING, new String[]{"pipe", "leak", "water", "tap", "drainage", "bathroom", "toilet"});
-        KEYWORDS.put(ComplaintCategory.ELECTRICAL, new String[]{"light", "electric", "wiring", "power", "switch", "fuse"});
-        KEYWORDS.put(ComplaintCategory.CLEANING_SANITATION, new String[]{"dustbin", "garbage", "clean", "smell", "sanitation", "waste"});
-        KEYWORDS.put(ComplaintCategory.SECURITY, new String[]{"security", "guard", "gate", "theft", "stranger", "unsafe"});
-        KEYWORDS.put(ComplaintCategory.NOISE, new String[]{"noise", "loud", "sound", "music", "party"});
-        KEYWORDS.put(ComplaintCategory.PARKING, new String[]{"parking", "vehicle", "car", "bike", "gaadi"});
-        KEYWORDS.put(ComplaintCategory.LIFT_ELEVATOR, new String[]{"lift", "elevator", "stuck"});
-        KEYWORDS.put(ComplaintCategory.GARDEN_MAINTENANCE, new String[]{"garden", "plant", "tree", "lawn"});
+        KEYWORDS.put(ComplaintCategory.PLUMBING, new String[]{"pipe", "leak", "water", "tap", "drainage", "bathroom", "toilet", "pani", "nal", "tanki", "seepage", "motor", "sink", "flush"});
+        KEYWORDS.put(ComplaintCategory.ELECTRICAL, new String[]{"light", "electric", "wiring", "power", "switch", "fuse", "bijli", "fan", "pankha", "wire", "bulb", "spark", "current", "geyser", "socket", "voltage"});
+        KEYWORDS.put(ComplaintCategory.CLEANING_SANITATION, new String[]{"dustbin", "garbage", "clean", "smell", "sanitation", "waste", "kachra", "safai", "saaf", "badbu", "gandagi", "kooda", "sweeper", "dirt", "cleaning"});
+        KEYWORDS.put(ComplaintCategory.SECURITY, new String[]{"security", "guard", "gate", "theft", "stranger", "unsafe", "chori", "chowkidar", "darwaza", "camera", "cctv", "lock", "tala"});
+        KEYWORDS.put(ComplaintCategory.NOISE, new String[]{"noise", "loud", "sound", "music", "party", "awaaz", "shor", "chillana", "speaker", "dhol"});
+        KEYWORDS.put(ComplaintCategory.PARKING, new String[]{"parking", "vehicle", "car", "bike", "gaadi", "gadi", "scooter", "slot", "park"});
+        KEYWORDS.put(ComplaintCategory.LIFT_ELEVATOR, new String[]{"lift", "elevator", "stuck", "atak"});
+        KEYWORDS.put(ComplaintCategory.GARDEN_MAINTENANCE, new String[]{"garden", "plant", "tree", "lawn", "bagicha", "ped", "ghas", "paudha", "grass", "branch"});
     }
 
     @Override

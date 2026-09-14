@@ -33,6 +33,13 @@ class ComplaintClassifierServiceImplTest {
     }
 
     @Test
+    void classifiesHinglishPlumbingAndElectrical() {
+        assertEquals(ComplaintCategory.PLUMBING, classifier.classify("mere flat mein nal se pani leak ho raha hai"));
+        assertEquals(ComplaintCategory.ELECTRICAL, classifier.classify("room ka pankha aur bijli ka switch kharab hai"));
+        assertEquals(ComplaintCategory.CLEANING_SANITATION, classifier.classify("ground floor par bahut kachra aur gandagi hai"));
+    }
+
+    @Test
     void fallsBackToOtherWhenNoKeywordsMatch() {
         String text = "I just wanted to say the committee is doing a great job overall.";
         assertEquals(ComplaintCategory.OTHER, classifier.classify(text));

@@ -38,10 +38,14 @@ public class ComplaintController {
      */
     @PostMapping("/voice")
     public String submitVoiceComplaint(@RequestParam("audio") MultipartFile audio,
+                                        @RequestParam(value = "transcript", required = false) String transcript,
+                                        @RequestParam(value = "language", required = false) String language,
                                         Authentication authentication,
                                         Model model) throws IOException {
         User resident = userService.findByEmail(authentication.getName());
-        var complaint = complaintService.fileVoiceComplaint(resident, audio.getBytes(), audio.getOriginalFilename());
+        var complaint = complaintService.fileVoiceComplaint(
+                resident, audio.getBytes(), audio.getOriginalFilename(), transcript, language
+        );
         model.addAttribute("justFiled", complaint);
         model.addAttribute("complaints", complaintService.findForResident(resident));
         return "complaints";
